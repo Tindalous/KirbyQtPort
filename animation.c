@@ -39,7 +39,7 @@ void chainAnim () {
     anim_pos4 = c_anim*4;
 }
 
-byte advAnim (byte *x, byte *y, byte *sprs, int *cam) {
+byte advAnim (byte *x, char *y, byte *sprs, int *cam) {
     for (int i = 0; i < 4; i++) {
         x[i] += directionsX[anim_pos4 + i];
         y[i] += directionsY[anim_pos4 + i];

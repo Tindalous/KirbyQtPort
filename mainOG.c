@@ -35,7 +35,7 @@ int cLvlStartScreen;
 int cLvlMapDataOffset;
 int cLvlEntityDataOffset;
 int cLvlTpDataOffset;
-char cLvl = 0;
+char cLvl = 1;
 char cScreen = 0;
 char holdingItem = 0;
 int cScreenWidth = 0;
@@ -478,7 +478,7 @@ void charProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
     if (trans == 1) {
         findTPAndLoadScreen();
     } else if (trans == 2) {
-        int temp = (charX + 40)/320;
+        //int temp = (charX + 40)/320;
         spitX = starX;
         spitY = starY - 8;
         charX = starX*10;
@@ -946,22 +946,22 @@ void initGame() {
     writeNum(5,21,BOSS);
 }
 
-unsigned char sprY[] = {0,0,0,0,0,0};
+char sprY[] = {0,0,0,0,0,0};
 byte sprX[] = 	{0,0,0,0,0,0};
 byte sprDat[] = {0,128,128,128,128,128}; //Si el bit de mas peso (+128) es 1 el sprite es invisible, el segundo bit de mas peso (+64) decide el flip,  el resto se usa para determinar el sprite
 byte eraseX;
 byte eraseY;
 
-void frame(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
+char* frame(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
     if (gameState <= 2) {
-        gameProcess(ctrlL, ctrlR, ctrlA, ctrlB);
+        return gameProcess(ctrlL, ctrlR, ctrlA, ctrlB);
     }
+    return "noFrame";
 }
 
-void gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
+char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
     //sprite erasing
     for (int i = 0; i < 6; i++) {
-        sprX[i] %= 80;
         eraseX = sprX[i] / 8;
         eraseY = sprY[i] / 8;
         if (sprY[i] >= 0)
@@ -1166,7 +1166,7 @@ void gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
         }
     }
 
-    if (gameState == 3) return;
+    if (gameState == 3) return "";
 
     camX = realCamX%80;
 
@@ -1217,5 +1217,19 @@ void gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
 
     if (camX > 79) camX = 0;
     if (camX < 0) camX = 79;
+    for (int i = 0; i < 6; i++) {
+        sprX[i] %= 80;
+    }
     renderImage(camX);
+
+
+    //DEBUG SHENANIGANS
+    char* ret = malloc(100*sizeof(char));
+    char outNum = sprX[1];
+    ret[0] = outNum/16 +48;
+    if (ret[0] > 48+9) ret[0] += -48+65-10;
+    ret[1] = outNum%16 + 48;
+    if (ret[1] > 48+9) ret[1] += -48+65-10;
+    ret[2] = '\0';
+    return ret;
 }

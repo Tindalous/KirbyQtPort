@@ -103,9 +103,9 @@ void MainWindow::ProcessInitGame() {
 
 void MainWindow::ProcessNewFrame() {
     //auto start = std::chrono::system_clock::now();
-    frame(inputButtons[0],inputButtons[1],inputButtons[2],inputButtons[3]);
+    char* s = frame(inputButtons[0],inputButtons[1],inputButtons[2],inputButtons[3]);
 
-
+    qDebug() << s;
 
     QPixmap* pix = new QPixmap();
     QImage* rets = DrawBuffer();

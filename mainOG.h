@@ -11,10 +11,12 @@
 #include "tilememory.h"
 #define _XTAL_FREQ 8000000
 
-void frame(int ctrlL, int ctrlR, int ctrlA, int ctrlB);
+char* frame(int ctrlL, int ctrlR, int ctrlA, int ctrlB);
 
 void initFrame();
 void initGame();
+
+char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB);
 
 unsigned char getBuffer(int x, int y);
 

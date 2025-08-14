@@ -5,6 +5,6 @@
 
 void setAnim (byte a);
 void chainAnim();
-byte advAnim (byte *x, byte *y, byte *sprs, int *cam);
+byte advAnim (byte *x, char *y, byte *sprs, int *cam);
 
 #endif // ANIMATION_H
