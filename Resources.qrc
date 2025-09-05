@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/all/basic">
+        <file>Logo.ico</file>
+        <file>Logo.png</file>
+        <file>Tutorial0.png</file>
+        <file>Tutorial1.png</file>
+        <file>Tutorial2.png</file>
+        <file>Tutorial3.png</file>
+        <file>Tutorial4.png</file>
+        <file>Tutorial5.png</file>
+    </qresource>
+</RCC>

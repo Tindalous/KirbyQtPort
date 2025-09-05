@@ -5,6 +5,8 @@
 
 #include <QGraphicsView>
 
+#include <QGraphicsPixmapItem>
+
 #include <QTimer>
 
 #include <QKeyEvent>
@@ -35,6 +37,12 @@ private:
     QKeyEvent* keyEvent;
 
     int inputButtons[4];
+    int screenSize = 4;
+
+    int partOfTutorial = 0; //-1 Cuando termina el tutorial
+    void advanceTutorial(int input);
+    void resizeTutorial();
+    void SetWindowItem(QPixmap* pix);
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;

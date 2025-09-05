@@ -20,5 +20,7 @@ char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB);
 
 unsigned char getBuffer(int x, int y);
 
+void setLevel(int lvl);
+
 
 #endif // MAINOG_H

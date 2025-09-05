@@ -35,7 +35,7 @@ int cLvlStartScreen;
 int cLvlMapDataOffset;
 int cLvlEntityDataOffset;
 int cLvlTpDataOffset;
-char cLvl = 1;
+char cLvl = 0;
 char cScreen = 0;
 char holdingItem = 0;
 int cScreenWidth = 0;
@@ -93,6 +93,9 @@ const unsigned char kirbysplash [1024] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 
 
+void setLevel(int lvl) {
+    cLvl = lvl;
+}
 
 void writeTxt(byte page, byte y, const char * s) {
     int i=0;
@@ -108,6 +111,7 @@ void writeTxt(byte page, byte y, const char * s) {
 
 
 byte getCol(int x, int y) {
+    if (x < 0) x += 80;
     x /= 8;
     x %= 10;
     y /= 8;
@@ -265,7 +269,7 @@ void findTPAndLoadScreen() {
     int tempx = charX/10;
     int i = 0;
     while (tpAreaP[i]*16 < tempx) i++;
-    loadScreen(tpDataP[i] + cLvlStartScreen,tpXP[i],tpYP[i], tpCamP[i]);
+    loadScreen(tpDataP[i] + cLvlStartScreen,tpXP[i]*8,tpYP[i], tpCamP[i]*8);
 }
 
 void gameOver() {
@@ -358,6 +362,7 @@ void charProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
 
     int tempX = (charX/10)%80;
     int tempY = (charY/10)%64;
+    int tempYtrue = charY/10;
     int tempXtrue = charX/10;
 
     byte col = getEntityCol(tempXtrue +4, tempY + 4);
@@ -376,6 +381,7 @@ void charProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
     int spX = 10;
     if (state != 0) spX = 5;
     spY += accY;
+    if (tempYtrue+8+(spY/10) < 64) //Arregla el bug de que detectaba tiles de arriba
     if (isCol(tempX, tempY+8+(spY/10)) == 1 || isCol(tempX + 7, tempY+8+(spY/10)) == 1 ||
         isCol(tempX, tempY+(spY/10)) == 1 || isCol(tempX + 7, tempY+(spY/10)) == 1) {
         charY = ((charY + 70)/80)*80; //hacky af
@@ -1007,7 +1013,7 @@ char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
             int col2 = getCol(spitX+4,spitY+4);
             if (col2 == 12) {
                 destroyStarBlock((spitX+4)/8, (spitY+4)/8);
-                clearTile(((spitX+4)/8) % 80, (spitY+4)/8);
+                clearTile(((spitX+4)/8) % 10, (spitY+4)/8);
                 spitDir = 0;
                 sprDat[1] = 128;
             }
@@ -1095,7 +1101,7 @@ char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
                 }
 
             } else if (screenType == 4) {
-                if (realCamX < screenEnd) {
+                if (realCamX < screenEnd - cScreenWidth +64) {
                     cHeight++;
                     charX += 10* cScreenWidth;
                     charY = 500;
@@ -1207,6 +1213,10 @@ char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
         if (cEntity < 0) cEntity = 0;
     }
 
+    for (int i = 0; i < 6; i++) {
+        sprX[i] %= 80;
+    }
+
     //Rendering
     for (int i = 0; i < 6; i++) {
         if (!(sprDat[i] & 0x80) && sprY[i] >= 0) {
@@ -1217,15 +1227,13 @@ char* gameProcess(int ctrlL, int ctrlR, int ctrlA, int ctrlB) {
 
     if (camX > 79) camX = 0;
     if (camX < 0) camX = 79;
-    for (int i = 0; i < 6; i++) {
-        sprX[i] %= 80;
-    }
+
     renderImage(camX);
 
 
     //DEBUG SHENANIGANS
     char* ret = malloc(100*sizeof(char));
-    char outNum = sprX[1];
+    unsigned char outNum = ((spitX+4)/8) % 80;
     ret[0] = outNum/16 +48;
     if (ret[0] > 48+9) ret[0] += -48+65-10;
     ret[1] = outNum%16 + 48;

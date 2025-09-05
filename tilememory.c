@@ -1,10 +1,10 @@
 #include "tilememory.h"
 
-unsigned char starBlocksX[64];
+unsigned int starBlocksX[64];
 unsigned char starBlocksY[64]; //bit 7 es aparecido/desapercido
 unsigned char starBlocksLength = 0;
 
-unsigned char itemPosX[20];
+unsigned int itemPosX[20];
 unsigned char itemPosY[20];
 unsigned char itemScreen[20];
 unsigned char itemsLength = 0;
